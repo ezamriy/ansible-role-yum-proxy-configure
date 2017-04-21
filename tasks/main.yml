@@ -1,0 +1,19 @@
+---
+- name: Setting yum proxy server
+  ini_file:
+    dest: /etc/yum.conf
+    section: main
+    option: proxy
+    value: "{{ yum_proxy_url }}"
+    state: present
+    no_extra_spaces: yes
+  when: not((yum_proxy_url is undefined) or (yum_proxy_url is none) or
+            (yum_proxy_url | trim == ''))
+
+- name: Removing yum proxy server
+  lineinfile:
+    dest: /etc/yum.conf
+    state: absent
+    regexp: '^\s*proxy\s*='
+  when: ((yum_proxy_url is undefined) or (yum_proxy_url is none) or
+         (yum_proxy_url | trim == ''))
